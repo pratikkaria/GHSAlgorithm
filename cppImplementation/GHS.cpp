@@ -1,6 +1,9 @@
 #include<bits/stdc++.h>
+#include "headers.h"
+// #include "createMST.cpp"
 using namespace std;
 
+//---------------Display the vector----------------
 template<typename T>
 void printVector(vector<T> str)
 {
@@ -8,6 +11,8 @@ void printVector(vector<T> str)
     cout<<str[i]<<endl;
   cout<<"----------------"<<endl;
 }
+
+//-------------Function to process each line of input-----------------
 vector<int> processLine(string s)
 {
   vector<int> out;
@@ -24,14 +29,17 @@ vector<int> processLine(string s)
   }
   return out;
 }
+
 int main(int argc,char** argv)
 {
-  std::ifstream file(argv[1]);
+  edge* temp = (edge*)malloc(sizeof(edge));
+  //-----------Reading Input from File and writing it in allEdges vector-------------
+  ifstream file(argv[1]);
   int numNodes,flag=0;
   if (file.is_open())
   {
-      std::string line;
-      while (std::getline(file, line))
+      string line;
+      while (getline(file, line))
       {
         if(flag==0)
         {
@@ -39,9 +47,15 @@ int main(int argc,char** argv)
           flag=1;
           continue;
         }
-        //printVector(processLine(line));
+        vector<int> edgeDetail=processLine(line);
+        temp->first=edgeDetail[0];
+        temp->second=edgeDetail[1];
+        temp->weight=edgeDetail[2];
+        temp->state=0;
+        allEdges.push_back(temp);
       }
       cout<<"Number of nodes:"<<numNodes<<endl;
+      cout<<allEdges.size()<<endl;
       file.close();
   }
   return 0;
