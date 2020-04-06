@@ -1,4 +1,5 @@
 #include<bits/stdc++.h>
+
 using namespace std;
 
 enum messageType
@@ -10,10 +11,12 @@ enum edgeState
 enum nodeState
 {SLEEP,FIND,FOUND};
 
+class Node;
+
 typedef struct edge
 {
-  int first;
-  int second;
+  Node* first;
+  Node* second;
   int weight;
   edgeState state;
 }edge;
@@ -26,3 +29,4 @@ typedef struct message
 
 vector<edge*> allEdges;
 vector<edge*> mstEdges;
+mutex addEdgeToMSTLock;
