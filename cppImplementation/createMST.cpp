@@ -6,37 +6,28 @@ class Node
 {
 public:
   nodeState state;
+  string name;
   int level,parent,bestWeight,bestNode,rec,testNode,nodeId;
   vector<Node*> neighbours;
   vector<edge*> adjacentEdges;
   queue<message*> messageQueue;
   mutex shareMutex;
+
+  //-----------------Parameterized Constructor------------------
   Node(int nodeId)
   {
     this->state=SLEEP;
     this->level=0;
+    this->name=to_string(nodeId);
     this->parent=-1;
     this->bestWeight=-1;
     this->bestNode=-1;
     this->rec=-1;
     this->testNode=-1;
     this->nodeId=nodeId;
-
-    // for(int i=0;i<edgeList.size();i++)
-    // {
-    //   edge* temp = edgeList[i];
-    //   if(temp->first==nodeId)
-    //   {
-    //     this->neighbours.push_back(temp->second);
-    //     this->adjacentEdges.push_back(temp);
-    //   }
-    //   else if(temp->second==nodeId)
-    //   {
-    //     this->neighbours.push_back(temp->first);
-    //     this->adjacentEdges.push_back(temp);
-    //   }
-    // }
   }
+
+  //---------------------Initial Connect Request-----------------------
   void initialConnect()
   {
     pair<edge*,int> getValue = findMinEdge();
@@ -56,19 +47,88 @@ public:
     message* messageToSend;
     messageToSend->message=CONNECT;
     messageToSend->arguments[0]=this->level;
+    messageToSend->arguments[1]=getValue.first->weight;
+    messageToSend->name="";
 
     if(getValue.first->first->nodeId==this->nodeId)
-      getValue.first->first->sendMessage(messageToSend);
-    else
       getValue.first->second->sendMessage(messageToSend);
+    else
+      getValue.first->first->sendMessage(messageToSend);
 
   }
+
+  //--------------------Process incoming connect request-------------------
+  void processConnectRequest(int level,int weight)
+  {
+    int index=-1;
+    for(int i=0;i<adjacentEdges.size();i++)
+    {
+      if(this->adjacentEdges[i]->weight==weight)
+      {
+        index=i;
+        break;
+      }
+    }
+    if(index==-1)
+      return;
+    if(level<this->level)
+    {
+      this->adjacentEdges[index]->state=BRANCH;
+      message* messageToSend;
+      messageToSend->message=INITIATE;
+      messageToSend->arguments[0]=this->level;
+      messageToSend->arguments[1]=this->state;
+      messageToSend->arguments[2]=weight;
+      messageToSend->name=this->name;
+
+      if(this->adjacentEdges[index]->first->nodeId==this->nodeId)
+        this->adjacentEdges[index]->second->sendMessage(messageToSend);
+      else
+        this->adjacentEdges[index]->first->sendMessage(messageToSend);
+    }
+    else if(this->adjacentEdges[index]->state==BASIC)
+    {
+      //Wait
+    }
+    else
+    {
+      message* messageToSend;
+      messageToSend->message=INITIATE;
+      messageToSend->arguments[0]=this->level;
+
+      messageToSend->arguments[1]=FIND;
+      messageToSend->arguments[2]=weight;
+
+      if(this->adjacentEdges[index]->first->nodeId==this->nodeId)
+      {
+        messageToSend->name=this->adjacentEdges[index]->second->name+this->name;
+        this->adjacentEdges[index]->second->sendMessage(messageToSend);
+      }
+      else
+      {
+        messageToSend->name=this->adjacentEdges[index]->first->name+this->name;
+        this->adjacentEdges[index]->first->sendMessage(messageToSend);
+      }
+
+    }
+
+  }
+
+  //------------------------Process Initiate Message------------------
+  void processInitiateRequest(int level,int state,int weight,string name)
+  {
+    
+  }
+
+  //------------------------sendMessage to a node-------------------
   void sendMessage(message* msg)
   {
     this->shareMutex.lock();
     this->messageQueue.push(msg);
     this->shareMutex.unlock();
   }
+
+  //------------------------Read message from the top-----------------
   void readMessageFromTop()
   {
     message* msg = messageQueue.front();
@@ -79,9 +139,11 @@ public:
         initialConnect();
         break;
       case CONNECT:
+        processConnectRequest(msg->arguments[0],msg->arguments[1]);
         cout<<"connect"<<endl;
         break;
       case INITIATE:
+        processInitiateRequest(msg->arguments[0],msg->arguments[1],msg->arguments[2],msg->name);
         cout<<"initiate"<<endl;
         break;
       case TEST:
@@ -101,6 +163,8 @@ public:
         break;
     }
   }
+
+  //----------------Find min weight outgoing edge---------------
   pair<edge*,int> findMinEdge()
   {
     int min=INT_MAX;
@@ -124,7 +188,11 @@ public:
     return retPair;
   }
 };
+
+
 int main()
 {
+  Node temp(4);
+  temp.processInitiateRequest(4,FIND,5,"hello");
   return 0;
 }

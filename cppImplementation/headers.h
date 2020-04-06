@@ -24,6 +24,7 @@ typedef struct edge
 typedef struct message
 {
   messageType message;
+  string name;
   int arguments[3];
 }message;
 
