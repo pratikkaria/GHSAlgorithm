@@ -30,6 +30,7 @@ public:
     this->nodeId=nodeId;
   }
 
+  //--------------------Helper Functions----------------------
   int getIndex(int weight)
   {
     int index=-1;
@@ -188,6 +189,7 @@ public:
       messageToSend->message=TEST;
       messageToSend->name=this->name;
       messageToSend->arguments[0]=this->level;
+      messageToSend->arguments[1]=this->adjacentEdges[getMinEdge.second]->weight;
       this->testNode->sendMessage(messageToSend);
     }
     else
@@ -197,10 +199,82 @@ public:
     }
   }
 
+
+  //------------------------Process Test Message------------------
+  void rejectEdge(int weight)
+  {
+    adjacentEdges[getIndex(weight)]->state=REJECTE;
+  }
+  void processTestRequest(int level,string name,int weight)
+  {
+    edge* edgeBetween=adjacentEdges[getIndex(weight)];
+    Node* node1;
+    if(edgeBetween->first->nodeId==this->nodeId)
+      node1 = edgeBetween->second;
+    else
+      node1 = edgeBetween->first;
+    if(level>this->level)
+      //wait
+      return;
+    else if(name==this->name)
+    {
+      if(edgeBetween->state==BASIC)
+      {
+        adjacentEdges[getIndex(weight)]->state=REJECTE;
+        node1->rejectEdge(weight);
+      }
+      if(node1->nodeId!=testNode->nodeId)
+      {
+        message* messageToSend;
+        messageToSend->message=REJECT;
+        messageToSend->arguments[0]=weight;
+        node1->sendMessage(messageToSend);
+      }
+      else
+        testPhase();
+    }
+    else
+    {
+      message* messageToSend;
+      messageToSend->message=ACCEPT;
+      messageToSend->arguments[0]=weight;
+      node1->sendMessage(messageToSend);
+    }
+  }
+
+  //------------------------Process Reject Request------------------
+  void processRejectRequest(int weight)
+  {
+    int ind = getIndex(weight);
+    if(adjacentEdges[ind]->state==BASIC)
+      adjacentEdges[ind]->state=REJECTE;
+
+    testPhase();
+  }
+
+  //------------------------Process Accept Request------------------
+  void processAcceptRequest(int weight)
+  {
+    this->testNode=NULL;
+    if(weight<this->bestWeight)
+    {
+      this->bestWeight=weight;
+      int ind = getIndex(weight);
+      if(adjacentEdges[ind]->first->nodeId==this->nodeId)
+        this->parent=adjacentEdges[ind]->second;
+      else
+        this->parent=adjacentEdges[ind]->first;
+    }
+    report();
+  }
+
+
+  //-------------------------Report Function------------------------
   void report()
   {
-
+    
   }
+  //-------------------------Process Report Request-----------------
 
   //------------------------sendMessage to a node-------------------
   void sendMessage(message* msg)
@@ -229,12 +303,15 @@ public:
         cout<<"initiate"<<endl;
         break;
       case TEST:
+        processTestRequest(msg->arguments[0],msg->name,msg->arguments[1]);
         cout<<"test"<<endl;
         break;
       case REJECT:
+        processRejectRequest(msg->arguments[0]);
         cout<<"reject"<<endl;
         break;
       case ACCEPT:
+        processAcceptRequest(msg->arguments[0]);
         cout<<"accept"<<endl;
         break;
       case REPORT:
