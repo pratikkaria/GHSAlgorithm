@@ -7,7 +7,10 @@ class Node
 public:
   nodeState state;
   string name;
-  int level,parent,bestWeight,bestNode,rec,testNode,nodeId;
+  int level,bestWeight,rec,nodeId;
+  Node* parent;
+  Node* bestNode;
+  Node* testNode;
   vector<Node*> neighbours;
   vector<edge*> adjacentEdges;
   queue<message*> messageQueue;
@@ -19,14 +22,36 @@ public:
     this->state=SLEEP;
     this->level=0;
     this->name=to_string(nodeId);
-    this->parent=-1;
-    this->bestWeight=-1;
-    this->bestNode=-1;
+    this->parent=NULL;
+    this->bestWeight=INT_MAX;
+    this->bestNode=NULL;
     this->rec=-1;
-    this->testNode=-1;
+    this->testNode=NULL;
     this->nodeId=nodeId;
   }
 
+  int getIndex(int weight)
+  {
+    int index=-1;
+    for(int i=0;i<adjacentEdges.size();i++)
+    {
+      if(this->adjacentEdges[i]->weight==weight)
+      {
+        index=i;
+        break;
+      }
+    }
+    return index;
+  }
+
+  edge* findEdgeTo(Node* neighbour)
+  {
+    for(int i=0;i<this->adjacentEdges.size();i++)
+    {
+      if(this->adjacentEdges[i]->first->nodeId==neighbour->nodeId || this->adjacentEdges[i]->second->nodeId==neighbour->nodeId)
+        return this->adjacentEdges[i];
+    }
+  }
   //---------------------Initial Connect Request-----------------------
   void initialConnect()
   {
@@ -49,6 +74,7 @@ public:
     messageToSend->arguments[0]=this->level;
     messageToSend->arguments[1]=getValue.first->weight;
     messageToSend->name="";
+    messageToSend->state=SLEEP;
 
     if(getValue.first->first->nodeId==this->nodeId)
       getValue.first->second->sendMessage(messageToSend);
@@ -60,15 +86,7 @@ public:
   //--------------------Process incoming connect request-------------------
   void processConnectRequest(int level,int weight)
   {
-    int index=-1;
-    for(int i=0;i<adjacentEdges.size();i++)
-    {
-      if(this->adjacentEdges[i]->weight==weight)
-      {
-        index=i;
-        break;
-      }
-    }
+    int index = getIndex(weight);
     if(index==-1)
       return;
     if(level<this->level)
@@ -77,9 +95,9 @@ public:
       message* messageToSend;
       messageToSend->message=INITIATE;
       messageToSend->arguments[0]=this->level;
-      messageToSend->arguments[1]=this->state;
-      messageToSend->arguments[2]=weight;
+      messageToSend->arguments[1]=weight;
       messageToSend->name=this->name;
+      messageToSend->state=this->state;
 
       if(this->adjacentEdges[index]->first->nodeId==this->nodeId)
         this->adjacentEdges[index]->second->sendMessage(messageToSend);
@@ -96,8 +114,8 @@ public:
       messageToSend->message=INITIATE;
       messageToSend->arguments[0]=this->level;
 
-      messageToSend->arguments[1]=FIND;
-      messageToSend->arguments[2]=weight;
+      messageToSend->state=FIND;
+      messageToSend->arguments[1]=weight;
 
       if(this->adjacentEdges[index]->first->nodeId==this->nodeId)
       {
@@ -115,9 +133,73 @@ public:
   }
 
   //------------------------Process Initiate Message------------------
-  void processInitiateRequest(int level,int state,int weight,string name)
+  void processInitiateRequest(int level,nodeState state,int weight,string name)
   {
-    
+    int index = getIndex(weight);
+    if(index==-1)
+      return;
+    this->level = level;
+    this->state = state;
+    this->name = name;
+    Node* temp;
+    if(adjacentEdges[index]->first->nodeId==this->nodeId)
+    {
+      this->parent = adjacentEdges[index]->second;
+      temp = adjacentEdges[index]->second;
+    }
+    else
+    {
+      this->parent = adjacentEdges[index]->first;
+      temp = adjacentEdges[index]->first;
+    }
+
+    message* messageToSend;
+    messageToSend->message=INITIATE;
+    messageToSend->arguments[0]=level;
+    messageToSend->arguments[1]=state;
+    messageToSend->arguments[2]=weight;
+    messageToSend->name=name;
+
+    for(int i=0;i<neighbours.size();i++)
+    {
+      edge* edgeBetween = findEdgeTo(neighbours[i]);
+      if(edgeBetween->state==BRANCH && temp->nodeId!=neighbours[i]->nodeId)
+        neighbours[i]->sendMessage(messageToSend);
+    }
+
+    if(state==FIND)
+    {
+      this->rec=0;
+      testPhase();
+    }
+  }
+
+  void testPhase()
+  {
+    pair<edge*,int> getMinEdge = findMinEdge();
+    if(getMinEdge.second!=-1)
+    {
+      if(getMinEdge.first->first->nodeId==this->nodeId)
+        this->testNode=getMinEdge.first->second;
+      else
+        this->testNode=getMinEdge.first->first;
+
+      message* messageToSend;
+      messageToSend->message=TEST;
+      messageToSend->name=this->name;
+      messageToSend->arguments[0]=this->level;
+      this->testNode->sendMessage(messageToSend);
+    }
+    else
+    {
+      this->testNode=NULL;
+      report();
+    }
+  }
+
+  void report()
+  {
+
   }
 
   //------------------------sendMessage to a node-------------------
@@ -143,7 +225,7 @@ public:
         cout<<"connect"<<endl;
         break;
       case INITIATE:
-        processInitiateRequest(msg->arguments[0],msg->arguments[1],msg->arguments[2],msg->name);
+        processInitiateRequest(msg->arguments[0],msg->state,msg->arguments[1],msg->name);
         cout<<"initiate"<<endl;
         break;
       case TEST:
@@ -179,11 +261,16 @@ public:
         minedge=adjacentEdges[i];
       }
     }
+
     pair<edge*,int> retPair;
     if(minedge)
     {
       minedge->state=BASIC;
       retPair=make_pair(minedge,index);
+    }
+    else
+    {
+      retPair.second=-1;
     }
     return retPair;
   }
@@ -194,5 +281,8 @@ int main()
 {
   Node temp(4);
   temp.processInitiateRequest(4,FIND,5,"hello");
+  pair<edge*,int> retPair;
+  retPair.second=-1;
+  cout<<retPair.second<<endl;
   return 0;
 }

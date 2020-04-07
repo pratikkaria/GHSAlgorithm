@@ -25,7 +25,8 @@ typedef struct message
 {
   messageType message;
   string name;
-  int arguments[3];
+  nodeState state;
+  int arguments[2];
 }message;
 
 vector<edge*> allEdges;
