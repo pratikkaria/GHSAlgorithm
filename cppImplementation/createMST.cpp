@@ -171,11 +171,11 @@ public:
     if(state==FIND)
     {
       this->rec=0;
-      testPhase();
+      this->testPhase(weight);
     }
   }
 
-  void testPhase()
+  void testPhase(int weight)
   {
     pair<edge*,int> getMinEdge = findMinEdge();
     if(getMinEdge.second!=-1)
@@ -195,7 +195,7 @@ public:
     else
     {
       this->testNode=NULL;
-      report();
+      report(weight);
     }
   }
 
@@ -205,6 +205,7 @@ public:
   {
     adjacentEdges[getIndex(weight)]->state=REJECTE;
   }
+
   void processTestRequest(int level,string name,int weight)
   {
     edge* edgeBetween=adjacentEdges[getIndex(weight)];
@@ -231,7 +232,7 @@ public:
         node1->sendMessage(messageToSend);
       }
       else
-        testPhase();
+        testPhase(weight);
     }
     else
     {
@@ -249,7 +250,7 @@ public:
     if(adjacentEdges[ind]->state==BASIC)
       adjacentEdges[ind]->state=REJECTE;
 
-    testPhase();
+    this->testPhase(weight);
   }
 
   //------------------------Process Accept Request------------------
@@ -265,16 +266,111 @@ public:
       else
         this->parent=adjacentEdges[ind]->first;
     }
-    report();
+    this->report(weight);
   }
 
 
   //-------------------------Report Function------------------------
-  void report()
+  void report(int weight)
   {
-    
+    int count = 0;
+    for(int i=0;i<adjacentEdges.size();i++)
+    {
+      Node* temp;
+      if(adjacentEdges[i]->first->nodeId==this->nodeId)
+        temp=adjacentEdges[i]->second;
+      else
+        temp=adjacentEdges[i]->first;
+
+      if(adjacentEdges[i]->state==BRANCH && temp->nodeId!=this->parent->nodeId)
+        count++;
+    }
+    if(this->rec==count && this->testNode==NULL)
+    {
+      this->state=FOUND;
+      message* messageToSend;
+      messageToSend->message=REPORT;
+      messageToSend->arguments[0]=this->bestWeight;
+      messageToSend->arguments[1]=weight;
+      this->parent->sendMessage(messageToSend);
+    }
   }
+
   //-------------------------Process Report Request-----------------
+  void processReportRequest(int bestWt,int weight)
+  {
+    Node* q;
+    int ind = getIndex(weight);
+    if(adjacentEdges[ind]->first->nodeId==this->nodeId)
+      q = adjacentEdges[ind]->second;
+    else
+      q = adjacentEdges[ind]->first;
+
+    if(this->parent->nodeId!=q->nodeId)
+    {
+      if(bestWt<this->bestWeight)
+      {
+        this->bestWeight=bestWt;
+        this->bestNode=q;
+      }
+      this->rec+=1;
+      this->report(weight);
+    }
+    else
+    {
+      if(this->state==FIND)
+      {
+        return;
+        //Wait
+      }
+      else if(bestWt>this->bestWeight)
+        this->changeRoot(weight);
+      else if(bestWt==this->bestWeight && bestWt==INT_MAX)
+      {
+        return;
+        //Stop
+      }
+    }
+  }
+
+  //------------------------Change Root Function--------------------
+  void changeRoot(int weight)
+  {
+    edge* best;
+    int ind=-1;
+    for(int i=0;i<adjacentEdges.size();i++)
+    {
+      if(adjacentEdges[i]->first->nodeId==this->bestNode->nodeId || adjacentEdges[i]->second->nodeId==this->bestNode->nodeId)
+      {
+        best=adjacentEdges[i];
+        ind=i;
+        break;
+      }
+    }
+
+    if(best->state==BRANCH)
+    {
+      message* messageToSend;
+      messageToSend->message=CHANGEROOT;
+      messageToSend->arguments[0]=weight;
+      this->bestNode->sendMessage(messageToSend);
+    }
+    else
+    {
+      adjacentEdges[ind]->state=BRANCH;
+      message* messageToSend;
+      messageToSend->message=CONNECT;
+      messageToSend->arguments[0]=this->level;
+      this->bestNode->sendMessage(messageToSend);
+    }
+  }
+
+  //------------------------Process Change root message-------------
+  void processChangeRootRequest(int weight)
+  {
+    changeRoot(weight);
+  }
+
 
   //------------------------sendMessage to a node-------------------
   void sendMessage(message* msg)
@@ -315,9 +411,11 @@ public:
         cout<<"accept"<<endl;
         break;
       case REPORT:
+        processReportRequest(msg->arguments[0],msg->arguments[1]);
         cout<<"report"<<endl;
         break;
       case CHANGEROOT:
+        processChangeRootRequest(msg->arguments[0]);
         cout<<"changeroot"<<endl;
         break;
     }
