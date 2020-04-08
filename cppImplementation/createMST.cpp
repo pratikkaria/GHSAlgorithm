@@ -75,7 +75,6 @@ public:
     messageToSend->arguments[0]=this->level;
     messageToSend->arguments[1]=getValue.first->weight;
     messageToSend->name="";
-    messageToSend->state=SLEEP;
 
     if(getValue.first->first->nodeId==this->nodeId)
       getValue.first->second->sendMessage(messageToSend);
@@ -107,13 +106,17 @@ public:
     }
     else if(this->adjacentEdges[index]->state==BASIC)
     {
-      //Wait
+      message* messageToSend;
+      messageToSend->message=CONNECT;
+      messageToSend->arguments[0]=level;
+      messageToSend->arguments[1]=weight;
+      this->sendMessage(messageToSend);
     }
     else
     {
       message* messageToSend;
       messageToSend->message=INITIATE;
-      messageToSend->arguments[0]=this->level;
+      messageToSend->arguments[0]=this->level+1;
 
       messageToSend->state=FIND;
       messageToSend->arguments[1]=weight;
@@ -154,6 +157,10 @@ public:
       temp = adjacentEdges[index]->first;
     }
 
+    this->bestNode=NULL;
+    this->bestWt=INT_MAX;
+    this->testNode=NULL;
+
     message* messageToSend;
     messageToSend->message=INITIATE;
     messageToSend->arguments[0]=level;
@@ -165,7 +172,7 @@ public:
     {
       edge* edgeBetween = findEdgeTo(neighbours[i]);
       if(edgeBetween->state==BRANCH && temp->nodeId!=neighbours[i]->nodeId)
-        neighbours[i]->sendMessage(messageToSend);
+        this->neighbours[i]->sendMessage(messageToSend);
     }
 
     if(state==FIND)
@@ -383,8 +390,17 @@ public:
   //------------------------Read message from the top-----------------
   void readMessageFromTop()
   {
-    message* msg = messageQueue.front();
-    messageQueue.pop();
+    if(!messageQueue.empty())
+    {
+      this->shareMutex.lock();
+      message* msg = messageQueue.front();
+      messageQueue.pop();
+      this->shareMutex.unlock();
+    }
+
+    if(this->state==SLEEP)
+      this->initialConnect();
+
     switch(msg->message)
     {
       case START:
