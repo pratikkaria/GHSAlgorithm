@@ -4,9 +4,12 @@
 using namespace std;
 
 //---------------Function for thread to execute---------------
-void startThreads(Node* node)
+void entryFunction(Node* node)
 {
-  cout<<node->nodeId<<endl;
+  while(!stopFlag)
+    node->readMessageFromTop();
+
+
 }
 //---------------Display the vector----------------
 template<typename T>
@@ -32,12 +35,13 @@ vector<int> processLine(string s)
         continue;
       out.push_back(atoi(word.c_str()));
   }
+  // printVector(out);
   return out;
 }
 
 int main(int argc,char** argv)
 {
-  edge* temp = (edge*)malloc(sizeof(edge));
+
   vector<Node*> allNodes;
   //----------------------Reading Input from File--------------------
   ifstream file(argv[1]);
@@ -48,6 +52,7 @@ int main(int argc,char** argv)
       //-------------------Creating Edge List and Node List-----------------------
       while (getline(file, line))
       {
+        edge* temp = (edge*)malloc(sizeof(edge));
         if(flag==0)
         {
           numNodes=atoi(line.c_str());
@@ -56,7 +61,7 @@ int main(int argc,char** argv)
           for(int i=0;i<numNodes;i++)
           {
 
-            Node* tempPtr =new Node(i+1);
+            Node* tempPtr =new Node(i);
             allNodes.push_back(tempPtr);
           }
           continue;
@@ -67,16 +72,23 @@ int main(int argc,char** argv)
         temp->second=allNodes[edgeDetail[1]];
         temp->weight=edgeDetail[2];
         temp->state=BASIC;
-        allNodes[temp->first]->adjacentEdges.push_back(temp);
-        allNodes[temp->second]->adjacentEdges.push_back(temp);
-        allNodes[temp->first]->neighbours.push_back(allNodes[temp->second]);
-        allNodes[temp->second]->neighbours.push_back(allNodes[temp->first]);
+        // cout<<temp->first->nodeId<<" "<<temp->second->nodeId<<endl;
+        allNodes[temp->first->nodeId]->adjacentEdges.push_back(temp);
+        allNodes[temp->second->nodeId]->adjacentEdges.push_back(temp);
+        allNodes[temp->first->nodeId]->neighbours.push_back(allNodes[temp->second->nodeId]);
+        allNodes[temp->second->nodeId]->neighbours.push_back(allNodes[temp->first->nodeId]);
         allEdges.push_back(temp);
       }
+      // cout<<allNodes[0]->nodeId<<endl;
+      // for(int i=0;i<allNodes[0]->adjacentEdges.size();i++)
+      //   cout<<allNodes[0]->adjacentEdges[i]->first->nodeId<<" "<<allNodes[0]->adjacentEdges[i]->second->nodeId<<endl;
+      thread t[numNodes];
       for(int i=0;i<numNodes;i++)
-      {
-        startThreads(allNodes[i]);
-      }
+        t[i]=thread(entryFunction,allNodes[i]);
+
+      allNodes[0]->initialConnect();
+      for(int i=0;i<numNodes;i++)
+        t[i].join();
       cout<<"Number of nodes:"<<numNodes<<endl;
       cout<<allEdges.size()<<endl;
       file.close();

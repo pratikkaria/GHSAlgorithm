@@ -47,11 +47,16 @@ public:
 
   edge* findEdgeTo(Node* neighbour)
   {
+    edge* toReturn;
     for(int i=0;i<this->adjacentEdges.size();i++)
     {
       if(this->adjacentEdges[i]->first->nodeId==neighbour->nodeId || this->adjacentEdges[i]->second->nodeId==neighbour->nodeId)
-        return this->adjacentEdges[i];
+      {
+        toReturn=this->adjacentEdges[i];
+        break;
+      }
     }
+    return toReturn;
   }
   //---------------------Initial Connect Request-----------------------
   void initialConnect()
@@ -70,11 +75,12 @@ public:
     this->level=0;
     this->rec=0;
 
-    message* messageToSend;
+    message* messageToSend=(message*)malloc(sizeof(message));
+
     messageToSend->message=CONNECT;
     messageToSend->arguments[0]=this->level;
     messageToSend->arguments[1]=getValue.first->weight;
-    messageToSend->name="";
+
 
     if(getValue.first->first->nodeId==this->nodeId)
       getValue.first->second->sendMessage(messageToSend);
@@ -86,13 +92,15 @@ public:
   //--------------------Process incoming connect request-------------------
   void processConnectRequest(int level,int weight)
   {
+
     int index = getIndex(weight);
     if(index==-1)
       return;
+
     if(level<this->level)
     {
       this->adjacentEdges[index]->state=BRANCH;
-      message* messageToSend;
+      message* messageToSend=(message*)malloc(sizeof(message));
       messageToSend->message=INITIATE;
       messageToSend->arguments[0]=this->level;
       messageToSend->arguments[1]=weight;
@@ -106,7 +114,7 @@ public:
     }
     else if(this->adjacentEdges[index]->state==BASIC)
     {
-      message* messageToSend;
+      message* messageToSend=(message*)malloc(sizeof(message));
       messageToSend->message=CONNECT;
       messageToSend->arguments[0]=level;
       messageToSend->arguments[1]=weight;
@@ -114,7 +122,8 @@ public:
     }
     else
     {
-      message* messageToSend;
+
+      message* messageToSend=(message*)malloc(sizeof(message));
       messageToSend->message=INITIATE;
       messageToSend->arguments[0]=this->level+1;
 
@@ -123,12 +132,15 @@ public:
 
       if(this->adjacentEdges[index]->first->nodeId==this->nodeId)
       {
-        messageToSend->name=this->adjacentEdges[index]->second->name+this->name;
+        messageToSend->name=this->adjacentEdges[index]->second->name;
+        messageToSend->name+=this->name;
+
         this->adjacentEdges[index]->second->sendMessage(messageToSend);
       }
       else
       {
-        messageToSend->name=this->adjacentEdges[index]->first->name+this->name;
+        messageToSend->name=this->adjacentEdges[index]->first->name;
+        messageToSend->name+=this->name;
         this->adjacentEdges[index]->first->sendMessage(messageToSend);
       }
 
@@ -146,6 +158,7 @@ public:
     this->state = state;
     this->name = name;
     Node* temp;
+
     if(adjacentEdges[index]->first->nodeId==this->nodeId)
     {
       this->parent = adjacentEdges[index]->second;
@@ -161,7 +174,7 @@ public:
     this->bestWeight=INT_MAX;
     this->testNode=NULL;
 
-    message* messageToSend;
+    message* messageToSend=(message*)malloc(sizeof(message));
     messageToSend->message=INITIATE;
     messageToSend->arguments[0]=level;
     messageToSend->arguments[1]=state;
@@ -192,7 +205,7 @@ public:
       else
         this->testNode=getMinEdge.first->first;
 
-      message* messageToSend;
+      message* messageToSend=(message*)malloc(sizeof(message));
       messageToSend->message=TEST;
       messageToSend->name=this->name;
       messageToSend->arguments[0]=this->level;
@@ -223,7 +236,7 @@ public:
       node1 = edgeBetween->first;
     if(level>this->level)
     {
-      message* messageToSend;
+      message* messageToSend=(message*)malloc(sizeof(message));
       messageToSend->message=TEST;
       messageToSend->arguments[0]=level;
       messageToSend->arguments[1]=weight;
@@ -239,7 +252,7 @@ public:
       }
       if(node1->nodeId!=testNode->nodeId)
       {
-        message* messageToSend;
+        message* messageToSend=(message*)malloc(sizeof(message));
         messageToSend->message=REJECT;
         messageToSend->arguments[0]=weight;
         node1->sendMessage(messageToSend);
@@ -249,7 +262,7 @@ public:
     }
     else
     {
-      message* messageToSend;
+      message* messageToSend=(message*)malloc(sizeof(message));
       messageToSend->message=ACCEPT;
       messageToSend->arguments[0]=weight;
       node1->sendMessage(messageToSend);
@@ -302,7 +315,7 @@ public:
     if(this->rec==count && this->testNode==NULL)
     {
       this->state=FOUND;
-      message* messageToSend;
+      message* messageToSend=(message*)malloc(sizeof(message));
       messageToSend->message=REPORT;
       messageToSend->arguments[0]=this->bestWeight;
       messageToSend->arguments[1]=weight;
@@ -334,7 +347,7 @@ public:
     {
       if(this->state==FIND)
       {
-        message* messageToSend;
+        message* messageToSend=(message*)malloc(sizeof(message));
         messageToSend->message=REPORT;
         messageToSend->arguments[0]=bestWt;
         messageToSend->arguments[1]=weight;
@@ -366,7 +379,7 @@ public:
 
     if(best->state==BRANCH)
     {
-      message* messageToSend;
+      message* messageToSend=(message*)malloc(sizeof(message));
       messageToSend->message=CHANGEROOT;
       messageToSend->arguments[0]=weight;
       this->bestNode->sendMessage(messageToSend);
@@ -374,7 +387,7 @@ public:
     else
     {
       adjacentEdges[ind]->state=BRANCH;
-      message* messageToSend;
+      message* messageToSend=(message*)malloc(sizeof(message));
       messageToSend->message=CONNECT;
       messageToSend->arguments[0]=this->level;
       messageToSend->arguments[1]=adjacentEdges[ind]->weight;
@@ -403,13 +416,15 @@ public:
   //------------------------Read message from the top-----------------
   void readMessageFromTop()
   {
+
     if(!messageQueue.empty())
     {
+
       this->shareMutex.lock();
       message* msg = messageQueue.front();
       messageQueue.pop();
       this->shareMutex.unlock();
-
+      cout<<"Message ID:"<<msg->message<<endl;
 
       if(this->state==SLEEP)
         this->initialConnect();
@@ -420,6 +435,7 @@ public:
           initialConnect();
           break;
         case CONNECT:
+
           processConnectRequest(msg->arguments[0],msg->arguments[1]);
           cout<<"connect"<<endl;
           break;
@@ -482,12 +498,12 @@ public:
 };
 
 
-int main()
-{
-  Node temp(4);
-  temp.processInitiateRequest(4,FIND,5,"hello");
-  pair<edge*,int> retPair;
-  retPair.second=-1;
-  cout<<retPair.second<<endl;
-  return 0;
-}
+// int main()
+// {
+//   Node temp(4);
+//   temp.processInitiateRequest(4,FIND,5,"hello");
+//   pair<edge*,int> retPair;
+//   retPair.second=-1;
+//   cout<<retPair.second<<endl;
+//   return 0;
+// }
