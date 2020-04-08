@@ -158,7 +158,7 @@ public:
     }
 
     this->bestNode=NULL;
-    this->bestWt=INT_MAX;
+    this->bestWeight=INT_MAX;
     this->testNode=NULL;
 
     message* messageToSend;
@@ -222,14 +222,20 @@ public:
     else
       node1 = edgeBetween->first;
     if(level>this->level)
-      //wait
-      return;
+    {
+      message* messageToSend;
+      messageToSend->message=TEST;
+      messageToSend->arguments[0]=level;
+      messageToSend->arguments[1]=weight;
+      messageToSend->name=name;
+      this->sendMessage(messageToSend);
+    }
     else if(name==this->name)
     {
       if(edgeBetween->state==BASIC)
       {
         adjacentEdges[getIndex(weight)]->state=REJECTE;
-        node1->rejectEdge(weight);
+        // node1->rejectEdge(weight);
       }
       if(node1->nodeId!=testNode->nodeId)
       {
@@ -267,11 +273,12 @@ public:
     if(weight<this->bestWeight)
     {
       this->bestWeight=weight;
+
       int ind = getIndex(weight);
       if(adjacentEdges[ind]->first->nodeId==this->nodeId)
-        this->parent=adjacentEdges[ind]->second;
+        this->bestNode=adjacentEdges[ind]->second;
       else
-        this->parent=adjacentEdges[ind]->first;
+        this->bestNode=adjacentEdges[ind]->first;
     }
     this->report(weight);
   }
@@ -327,15 +334,17 @@ public:
     {
       if(this->state==FIND)
       {
-        return;
-        //Wait
+        message* messageToSend;
+        messageToSend->message=REPORT;
+        messageToSend->arguments[0]=bestWt;
+        messageToSend->arguments[1]=weight;
+        this->sendMessage(messageToSend);
       }
       else if(bestWt>this->bestWeight)
         this->changeRoot(weight);
       else if(bestWt==this->bestWeight && bestWt==INT_MAX)
       {
-        return;
-        //Stop
+        stopFlag=1;
       }
     }
   }
@@ -368,7 +377,11 @@ public:
       message* messageToSend;
       messageToSend->message=CONNECT;
       messageToSend->arguments[0]=this->level;
+      messageToSend->arguments[1]=adjacentEdges[ind]->weight;
       this->bestNode->sendMessage(messageToSend);
+      addEdgeToMSTLock.lock();
+      mstEdges.push_back(adjacentEdges[ind]);
+      addEdgeToMSTLock.unlock();
     }
   }
 
@@ -396,44 +409,45 @@ public:
       message* msg = messageQueue.front();
       messageQueue.pop();
       this->shareMutex.unlock();
-    }
 
-    if(this->state==SLEEP)
-      this->initialConnect();
 
-    switch(msg->message)
-    {
-      case START:
-        initialConnect();
-        break;
-      case CONNECT:
-        processConnectRequest(msg->arguments[0],msg->arguments[1]);
-        cout<<"connect"<<endl;
-        break;
-      case INITIATE:
-        processInitiateRequest(msg->arguments[0],msg->state,msg->arguments[1],msg->name);
-        cout<<"initiate"<<endl;
-        break;
-      case TEST:
-        processTestRequest(msg->arguments[0],msg->name,msg->arguments[1]);
-        cout<<"test"<<endl;
-        break;
-      case REJECT:
-        processRejectRequest(msg->arguments[0]);
-        cout<<"reject"<<endl;
-        break;
-      case ACCEPT:
-        processAcceptRequest(msg->arguments[0]);
-        cout<<"accept"<<endl;
-        break;
-      case REPORT:
-        processReportRequest(msg->arguments[0],msg->arguments[1]);
-        cout<<"report"<<endl;
-        break;
-      case CHANGEROOT:
-        processChangeRootRequest(msg->arguments[0]);
-        cout<<"changeroot"<<endl;
-        break;
+      if(this->state==SLEEP)
+        this->initialConnect();
+
+      switch(msg->message)
+      {
+        case START:
+          initialConnect();
+          break;
+        case CONNECT:
+          processConnectRequest(msg->arguments[0],msg->arguments[1]);
+          cout<<"connect"<<endl;
+          break;
+        case INITIATE:
+          processInitiateRequest(msg->arguments[0],msg->state,msg->arguments[1],msg->name);
+          cout<<"initiate"<<endl;
+          break;
+        case TEST:
+          processTestRequest(msg->arguments[0],msg->name,msg->arguments[1]);
+          cout<<"test"<<endl;
+          break;
+        case REJECT:
+          processRejectRequest(msg->arguments[0]);
+          cout<<"reject"<<endl;
+          break;
+        case ACCEPT:
+          processAcceptRequest(msg->arguments[0]);
+          cout<<"accept"<<endl;
+          break;
+        case REPORT:
+          processReportRequest(msg->arguments[0],msg->arguments[1]);
+          cout<<"report"<<endl;
+          break;
+        case CHANGEROOT:
+          processChangeRootRequest(msg->arguments[0]);
+          cout<<"changeroot"<<endl;
+          break;
+      }
     }
   }
 

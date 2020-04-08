@@ -32,3 +32,4 @@ typedef struct message
 vector<edge*> allEdges;
 vector<edge*> mstEdges;
 mutex addEdgeToMSTLock;
+int stopFlag=0;
