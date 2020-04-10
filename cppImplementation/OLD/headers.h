@@ -15,7 +15,8 @@ class Node;
 
 typedef struct edge
 {
-  Node* destNode;
+  Node* first;
+  Node* second;
   int weight;
   edgeState state;
 }edge;
@@ -29,6 +30,6 @@ typedef struct message
 }message;
 
 vector<edge*> allEdges;
-vector<string> mstEdges;
+vector<edge*> mstEdges;
 mutex addEdgeToMSTLock;
-int stopFlag;
+int stopFlag=0;

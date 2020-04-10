@@ -1,1 +1,1 @@
-g++ -std=c++11 -pthread $1
+g++ -g -std=c++11 -pthread $1

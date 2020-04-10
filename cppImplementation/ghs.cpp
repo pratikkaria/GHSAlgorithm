@@ -1,6 +1,6 @@
 #include<bits/stdc++.h>
 // #include "headers.h"
-#include "createMSTNext.cpp"
+#include "node1.cpp"
 #include <unistd.h>
 using namespace std;
 
@@ -8,10 +8,28 @@ using namespace std;
 void entryFunction(Node* node)
 {
   while(!stopFlag)
-    node->readMessageFromTop();
+    node->pullMessage();
 // cout<<this_thread::get_id()<<endl;
 
 }
+
+void printAdjacentEdges(int myId,Node* node)
+{
+  cout<<"Adjacent Edges Of:"<<node->nodeId<<endl;
+  cout<<"First\t"<<"Second\t"<<"Weight\t"<<"State\t"<<endl;
+  for (auto i : node->adjacentEdges)
+  {
+    int destNodeId = i.first;
+    edge* edgeTo = i.second;
+    cout<<myId<<"\t"<<destNodeId<<"\t"<<edgeTo->weight<<"\t"<<edgeTo->state<<"\t"<<edgeTo->destNode->nodeId<<endl;
+  }
+  // for(int i=0;i<node->adjacentEdges.size();i++)
+  //   cout<<myId<<"\t"<<node->adjacentEdges[i]->destNode->nodeId<<"\t"<<node->adjacentEdges[i]->weight<<"\t"<<node->adjacentEdges[i]->state<<endl;
+  cout<<"---------------------"<<endl;
+}
+
+
+
 //---------------Display the vector----------------
 template<typename T>
 void printVector(vector<T> str)
@@ -40,6 +58,12 @@ vector<int> processLine(string s)
   return out;
 }
 
+void printMST()
+{
+  cout<<"---------------------------------------------------"<<endl;
+  for(int i=0;i<mstEdges.size();i++)
+    cout<<mstEdges[i]<<endl;
+}
 int main(int argc,char** argv)
 {
 
@@ -53,7 +77,7 @@ int main(int argc,char** argv)
       //-------------------Creating Edge List and Node List-----------------------
       while (getline(file, line))
       {
-        edge* temp = (edge*)malloc(sizeof(edge));
+
         if(flag==0)
         {
           numNodes=atoi(line.c_str());
@@ -69,20 +93,25 @@ int main(int argc,char** argv)
         }
 
         vector<int> edgeDetail=processLine(line);
-        temp->first=allNodes[edgeDetail[0]];
-        temp->second=allNodes[edgeDetail[1]];
-        temp->weight=edgeDetail[2];
-        temp->state=BASIC;
+        edge* temp = (edge*)malloc(sizeof(edge));
+        edge* temp1 = (edge*)malloc(sizeof(edge));
+        temp->destNode = allNodes[edgeDetail[1]];
+        temp->weight = edgeDetail[2];
+        temp->state = BASIC;
+
+        temp1->destNode = allNodes[edgeDetail[0]];
+        temp1->weight = edgeDetail[2];
+        temp1->state = BASIC;
         // cout<<temp->first->nodeId<<" "<<temp->second->nodeId<<endl;
-        allNodes[temp->first->nodeId]->adjacentEdges.push_back(temp);
-        allNodes[temp->second->nodeId]->adjacentEdges.push_back(temp);
-        allNodes[temp->first->nodeId]->neighbours.push_back(allNodes[temp->second->nodeId]);
-        allNodes[temp->second->nodeId]->neighbours.push_back(allNodes[temp->first->nodeId]);
-        allEdges.push_back(temp);
+        allNodes[edgeDetail[0]]->adjacentEdges[edgeDetail[1]]=temp;
+        allNodes[edgeDetail[1]]->adjacentEdges[edgeDetail[0]]=temp1;
+        // allNodes[edgeDetail[0]]->adjacentEdges.push_back(temp);
+        // allNodes[edgeDetail[1]]->adjacentEdges.push_back(temp1);
+
       }
-      // cout<<allNodes[0]->nodeId<<endl;
-      // for(int i=0;i<allNodes[0]->adjacentEdges.size();i++)
-      //   cout<<allNodes[0]->adjacentEdges[i]->first->nodeId<<" "<<allNodes[0]->adjacentEdges[i]->second->nodeId<<endl;
+      for(int i=0;i<allNodes.size();i++)
+        printAdjacentEdges(i,allNodes[i]);
+      stopFlag=0;
       thread t[numNodes];
       for(int i=0;i<numNodes;i++)
         t[i]=thread(entryFunction,allNodes[i]);
@@ -90,6 +119,8 @@ int main(int argc,char** argv)
       allNodes[0]->initialConnect();
       for(int i=0;i<numNodes;i++)
         t[i].join();
+
+      printMST();
       cout<<"Number of nodes:"<<numNodes<<endl;
       cout<<allEdges.size()<<endl;
       file.close();

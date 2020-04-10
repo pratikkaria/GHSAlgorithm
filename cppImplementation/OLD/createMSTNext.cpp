@@ -20,7 +20,7 @@ public:
   Node(int nodeId)
   {
     this->state=SLEEP;
-    this->level=0;
+    this->level=-1;
     this->name=to_string(nodeId);
     this->parent=NULL;
     this->bestWeight=INT_MAX;
@@ -46,10 +46,7 @@ public:
     for(int i=0;i<this->adjacentEdges.size();i++)
     {
       if(this->adjacentEdges[i]->first->nodeId==neighbour->nodeId || this->adjacentEdges[i]->second->nodeId==neighbour->nodeId)
-      {
-        toReturn=this->adjacentEdges[i];
-        break;
-      }
+        return this->adjacentEdges[i];
     }
     return toReturn;
   }
@@ -69,8 +66,8 @@ public:
     if(!this->messageQueue.empty())
     {
       this->shareMutex.lock();
-      message* msg = messageQueue.front();
-      messageQueue.pop();
+      message* msg = this->messageQueue.front();
+      this->messageQueue.pop();
       this->shareMutex.unlock();
       if(this->state==SLEEP)
         this->initialConnect();
@@ -83,7 +80,7 @@ public:
       switch(msg->message)
       {
         case START:
-          this->initialConnect();
+          initialConnect();
           break;
         case CONNECT:
           processConnectRequest(msg->arguments[0],msg->arguments[1]);
@@ -118,25 +115,17 @@ public:
     int min=INT_MAX;
     int index=-1;
     edge* minedge;
-    for(int i=0;i<adjacentEdges.size();i++)
+    for(int i=0;i<this->adjacentEdges.size();i++)
     {
-      if(adjacentEdges[i]->weight<min && adjacentEdges[i]->state==BASIC)
+      if(this->adjacentEdges[i]->weight<min && this->adjacentEdges[i]->state==BASIC)
       {
-        min=adjacentEdges[i]->weight;
+        min=this->adjacentEdges[i]->weight;
         index=i;
-        minedge=adjacentEdges[i];
+        minedge=this->adjacentEdges[i];
       }
     }
 
-    pair<edge*,int> retPair;
-    if(minedge)
-    {
-      retPair=make_pair(minedge,index);
-    }
-    else
-    {
-      retPair=make_pair(minedge,index);
-    }
+    pair<edge*,int> retPair=make_pair(minedge,index);
 
     return retPair;
   }
@@ -145,7 +134,7 @@ public:
   void initialConnect()
   {
     int min = INT_MAX, index = -1;
-    for (int i = 0; i < adjacentEdges.size(); i++)
+    for (int i=0; i<this->adjacentEdges.size(); i++)
     {
       if (this->adjacentEdges[i]->weight < min)
       {
@@ -173,7 +162,7 @@ public:
 
     if(this->adjacentEdges[index]->first->nodeId==this->nodeId)
       this->adjacentEdges[index]->second->sendMessage(messageToSend);
-    else
+    else if(this->adjacentEdges[index]->second->nodeId==this->nodeId)
       this->adjacentEdges[index]->first->sendMessage(messageToSend);
   }
 
@@ -195,7 +184,7 @@ public:
 
       if(this->adjacentEdges[index]->first->nodeId==this->nodeId)
         this->adjacentEdges[index]->second->sendMessage(messageToSend);
-      else
+      else if(this->adjacentEdges[index]->second->nodeId==this->nodeId)
         this->adjacentEdges[index]->first->sendMessage(messageToSend);
     }
     else if(this->adjacentEdges[index]->state==BASIC)
@@ -214,7 +203,7 @@ public:
       messageToSend->arguments[0]=this->level+1;
 
       messageToSend->state=FIND;
-      messageToSend->arguments[1]=weight;
+      messageToSend->arguments[1]=this->adjacentEdges[index]->weight;
 
       if(this->adjacentEdges[index]->first->nodeId==this->nodeId)
       {
@@ -223,7 +212,7 @@ public:
 
         this->adjacentEdges[index]->second->sendMessage(messageToSend);
       }
-      else
+      else if(this->adjacentEdges[index]->second->nodeId==this->nodeId)
       {
         messageToSend->name=this->adjacentEdges[index]->first->name;
         messageToSend->name+=this->name;
@@ -238,8 +227,7 @@ public:
   void processInitiateRequest(int level,nodeState state,int weight,string name)
   {
     int index = getIndex(weight);
-    if(index==-1)
-      return;
+
     this->level = level;
     this->state = state;
     this->name = name;
@@ -249,7 +237,7 @@ public:
       this->parent = adjacentEdges[index]->second;
       temp = adjacentEdges[index]->second;
     }
-    else
+    else if(adjacentEdges[index]->second->nodeId==this->nodeId)
     {
       this->parent = adjacentEdges[index]->first;
       temp = adjacentEdges[index]->first;
@@ -286,11 +274,11 @@ public:
   void testPhase()
   {
     pair<edge*,int> getMinEdge = findMinEdge();
-    if(getMinEdge.second!=-1)
+    if(getMinEdge.second>=0)
     {
       if(getMinEdge.first->first->nodeId==this->nodeId)
         this->testNode=getMinEdge.first->second;
-      else
+      else if(getMinEdge.first->second->nodeId==this->nodeId)
         this->testNode=getMinEdge.first->first;
 
       message* messageToSend=(message*)malloc(sizeof(message));
@@ -310,12 +298,13 @@ public:
 
   void processTestRequest(int level,string name,int weight)
   {
-    edge* edgeBetween=adjacentEdges[getIndex(weight)];
+    edge* edgeBetween=this->adjacentEdges[getIndex(weight)];
     Node* node1;
     if(edgeBetween->first->nodeId==this->nodeId)
       node1 = edgeBetween->second;
-    else
+    else if(edgeBetween->second->nodeId==this->nodeId)
       node1 = edgeBetween->first;
+
     if(level>this->level)
     {
       message* messageToSend=(message*)malloc(sizeof(message));
@@ -359,7 +348,7 @@ public:
       int ind = getIndex(weight);
       if(adjacentEdges[ind]->first->nodeId==this->nodeId)
         this->bestNode=adjacentEdges[ind]->second;
-      else
+      else if(adjacentEdges[ind]->second->nodeId==this->nodeId)
         this->bestNode=adjacentEdges[ind]->first;
     }
     this->report();
@@ -368,8 +357,8 @@ public:
   void processRejectRequest(int weight)
   {
     int ind = getIndex(weight);
-    if(adjacentEdges[ind]->state==BASIC)
-      adjacentEdges[ind]->state=REJECTE;
+    if(this->adjacentEdges[ind]->state==BASIC)
+      this->adjacentEdges[ind]->state=REJECTE;
 
     this->testPhase();
   }
@@ -382,7 +371,7 @@ public:
       Node* temp;
       if(this->adjacentEdges[i]->first->nodeId==this->nodeId)
         temp=this->adjacentEdges[i]->second;
-      else
+      else if(this->adjacentEdges[i]->second->nodeId==this->nodeId)
         temp=this->adjacentEdges[i]->first;
 
       if(this->adjacentEdges[i]->state==BRANCH && temp->nodeId!=this->parent->nodeId)
@@ -405,9 +394,9 @@ public:
     cout<<"start "<<this->nodeId<<endl;
     Node* q;
     int ind = getIndex(weight);
-    if(adjacentEdges[ind]->first->nodeId==this->nodeId)
+    if(this->adjacentEdges[ind]->first->nodeId==this->nodeId)
       q = adjacentEdges[ind]->second;
-    else
+    else if(this->adjacentEdges[ind]->second->nodeId==this->nodeId)
       q = adjacentEdges[ind]->first;
 
     if(this->parent->nodeId!=q->nodeId)
@@ -427,11 +416,11 @@ public:
         message* messageToSend=(message*)malloc(sizeof(message));
         messageToSend->message=REPORT;
         messageToSend->arguments[0]=bestWt;
-        messageToSend->arguments[1]=weight;
+        messageToSend->arguments[1]=this->adjacentEdges[ind]->weight;
         this->sendMessage(messageToSend);
       }
       else if(bestWt>this->bestWeight)
-        this->changeRoot();
+        changeRoot();
       else if(this->bestWeight==INT_MAX && bestWt==INT_MAX)
       {
         stopFlag=1;
@@ -445,9 +434,9 @@ public:
   {
     edge* best;
     int ind=-1;
-    for(int i=0;i<adjacentEdges.size();i++)
+    for(int i=0;i<this->adjacentEdges.size();i++)
     {
-      if(adjacentEdges[i]->first->nodeId==this->bestNode->nodeId || adjacentEdges[i]->second->nodeId==this->bestNode->nodeId)
+      if(this->adjacentEdges[i]->first->nodeId==this->bestNode->nodeId || this->adjacentEdges[i]->second->nodeId==this->bestNode->nodeId)
       {
         best=adjacentEdges[i];
         ind=i;
@@ -464,13 +453,16 @@ public:
     }
     else
     {
-      adjacentEdges[ind]->state=BRANCH;
+
       message* messageToSend=(message*)malloc(sizeof(message));
       messageToSend->message=CONNECT;
       messageToSend->arguments[0]=this->level;
       messageToSend->arguments[1]=adjacentEdges[ind]->weight;
       this->bestNode->sendMessage(messageToSend);
+      this->adjacentEdges[ind]->state=BRANCH;
       addEdgeToMSTLock.lock();
+
+      cout<<"Pushing : "<<adjacentEdges[ind]->first<<" "<<adjacentEdges[ind]->second<<endl;
       mstEdges.push_back(adjacentEdges[ind]);
       addEdgeToMSTLock.unlock();
     }
