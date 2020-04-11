@@ -1,5 +1,5 @@
 #include<bits/stdc++.h>
-// #include "headers.h"
+//#include "headers.h"
 #include "node1.cpp"
 #include <unistd.h>
 using namespace std;
@@ -13,19 +13,22 @@ void entryFunction(Node* node)
 
 }
 
-void printAdjacentEdges(int myId,Node* node)
+void printAdjacentEdges(ofstream *logFile)
 {
-  cout<<"Adjacent Edges Of:"<<node->nodeId<<endl;
-  cout<<"First\t"<<"Second\t"<<"Weight\t"<<"State\t"<<endl;
-  for (auto i : node->adjacentEdges)
+  for(int j=0;j<allNodes.size();j++)
   {
-    int destNodeId = i.first;
-    edge* edgeTo = i.second;
-    cout<<myId<<"\t"<<destNodeId<<"\t"<<edgeTo->weight<<"\t"<<edgeTo->state<<"\t"<<edgeTo->destNode->nodeId<<endl;
+    *logFile<<"Adjacent Edges Of:"<<allNodes[j]->nodeId<<"\n";
+    *logFile<<"First\t"<<"Second\t"<<"Weight\t"<<"State\t"<<"\n";
+    for (auto i : allNodes[j]->adjacentEdges)
+    {
+      int destNodeId = i.first;
+      edge* edgeTo = i.second;
+      *logFile<<allNodes[j]->nodeId<<"\t"<<destNodeId<<"\t"<<edgeTo->weight<<"\t"<<edgeTo->state<<"\t"<<edgeTo->destNode->nodeId<<"\n";
+    }
+    // for(int i=0;i<node->adjacentEdges.size();i++)
+    //   cout<<myId<<"\t"<<node->adjacentEdges[i]->destNode->nodeId<<"\t"<<node->adjacentEdges[i]->weight<<"\t"<<node->adjacentEdges[i]->state<<endl;
+    *logFile<<"---------------------"<<"\n";
   }
-  // for(int i=0;i<node->adjacentEdges.size();i++)
-  //   cout<<myId<<"\t"<<node->adjacentEdges[i]->destNode->nodeId<<"\t"<<node->adjacentEdges[i]->weight<<"\t"<<node->adjacentEdges[i]->state<<endl;
-  cout<<"---------------------"<<endl;
 }
 
 
@@ -80,10 +83,98 @@ void postProcessing()
   for(auto i:mst)
     cout<<"("<<i.second.first<<", "<<i.second.second<<", "<<i.first<<")"<<endl;
 }
+
+// void logData(double executionTime)
+// {
+//   ofstream logFile;
+//   logFile.open ("logs.txt");
+//   logFile<<"Execution Time of the program: "<<executionTime<<" seconds\n";
+//   for(int i=0;i<allNodes.size();i++)
+//     logFile<<"Number of Messages Sent by Node:"<<i<<" is "<<allNodes[i]->numberOfMessages<<"\n";
+//
+//
+//   logFile.close();
+// }
+
+
+void logSummary(double executionTime)
+{
+  ofstream logFile;
+  logFile.open ("summary.txt");
+  printAdjacentEdges(&logFile);
+
+  logFile<<"Execution Time of the program: "<<executionTime<<" seconds\n";
+  for(int i=0;i<allNodes.size();i++)
+    logFile<<"Number of Messages Sent by Node:"<<i<<" is "<<allNodes[i]->numberOfMessages<<"\n";
+
+  logFile<<"-----------------------\n";
+  logFile<<"Final MST: \n";
+  logFile<<"-----------------------\n";
+  map<int,pair<int,int>> mst;
+  for(int j=0;j<mstEdges.size();j++)
+  {
+    vector<int> temp = processLine(mstEdges[j]);
+    for(auto i:allEdges)
+      if(i.first==temp[2])
+        mst[i.first]=i.second;
+  }
+
+  for(auto i:mst)
+    logFile<<"("<<i.second.first<<", "<<i.second.second<<", "<<i.first<<")"<<"\n";
+
+
+  logFile.close();
+}
 int main(int argc,char** argv)
 {
+  int all=0;
+  clock_t start, end;
+  logEnables=0;
+  if(argc<2)
+  {
+    cout<<"Please Enter An Input File Name";
+    return 0;
+  }
+  else if(argc==2)
+  {
+    if(strcmp(argv[1],"--help")==0)
+    {
+      cout<<"To Find MST: ./findMST <input_file_name>"<<endl;
+      cout<<"To Enable Logs: ./findMST <input_file_name> --enable-logs"<<endl;
+      cout<<"To Enable Summary: ./findMST <input_file_name> --enable-summary"<<endl;
+      cout<<"To Enable Both: ./findMST <input_file_name> --enable-all-logs"<<endl;
+      return 0;
+    }
+    else if(strcmp(argv[1],"--enable-logs")==0 || strcmp(argv[1],"--enable-summary")==0 || strcmp(argv[1],"--enable-all-logs")==0)
+    {
+      cout<<"Invalid Option"<<endl;
+      cout<<"To Find MST: ./findMST <input_file_name>"<<endl;
+      cout<<"To Enable Logs: ./findMST <input_file_name> --enable-logs"<<endl;
+      cout<<"To Enable Summary: ./findMST <input_file_name> --enable-summary"<<endl;
+      cout<<"To Enable Both: ./findMST <input_file_name> --enable-all-logs"<<endl;
+      return 0;
+    }
+  }
+  else if(argc==3)
+  {
+    if(strcmp(argv[2],"--enable-logs")==0)
+      logEnables=2;
+    else if(strcmp(argv[2],"--enable-summary")==0)
+      logEnables=1;
+    else if(strcmp(argv[2],"--enable-all-logs")==0)
+    {
+        logEnables=2;
+        all=1;
+    }
+    else
+    {
+      cout<<"Invalid Option. Please Enter Correctly"<<endl;
+      return 0;
+    }
+  }
 
-  vector<Node*> allNodes;
+
+  start = clock();
   //----------------------Reading Input from File--------------------
   ifstream file(argv[1]);
   int numNodes,flag=0;
@@ -123,7 +214,10 @@ int main(int argc,char** argv)
 
       }
 
+
       stopFlag=0;
+      if(logEnables==2)
+        logFile.open ("logs.txt");
       thread t[numNodes];
       for(int i=0;i<numNodes;i++)
         t[i]=thread(entryFunction,allNodes[i]);
@@ -132,10 +226,19 @@ int main(int argc,char** argv)
       for(int i=0;i<numNodes;i++)
         t[i].join();
 
+      if(logEnables==2)
+        logFile.close();
       postProcessing();
+      end = clock();
+      double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
 
+      if(logEnables==1 || all==1)
+        logSummary(time_taken);
       file.close();
   }
-
+  else
+  {
+    cout<<"File Doesn't Exists"<<endl;
+  }
   return 0;
 }

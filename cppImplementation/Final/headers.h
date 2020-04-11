@@ -29,6 +29,11 @@ typedef struct message
 }message;
 
 map<int,pair<int,int>> allEdges;
+map<int,int> logMessages;
 vector<string> mstEdges;
 mutex addEdgeToMSTLock;
+mutex logMutex;
 int stopFlag;
+vector<Node*> allNodes;
+ofstream logFile;
+int logEnables;

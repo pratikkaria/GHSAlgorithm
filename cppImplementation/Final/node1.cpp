@@ -14,7 +14,7 @@ public:
   map<int,edge*> adjacentEdges;
   queue<message> messageQueue;
   mutex shareMutex;
-
+  int numberOfMessages;
   //-----------------Parameterized Constructor------------------
   Node(int nodeId)
   {
@@ -27,6 +27,7 @@ public:
     this->rec=-1;
     this->testNode=-1;
     this->nodeId=nodeId;
+    this->numberOfMessages=0;
   }
 
 
@@ -48,6 +49,13 @@ public:
     return -1;
   }
 
+  void createLogMessage(string first,int second,int third)
+  {
+    string log=first;
+    log+=to_string(second);
+    log+=" to " + to_string(third) +"\n";
+    logFile<<log;
+  }
   //arguments[1] reserved for key of adjacentEdges
   void pullMessage()
   {
@@ -137,6 +145,9 @@ public:
     messageToSend.arguments[0] = 0;
     messageToSend.arguments[1] = min;
     this->adjacentEdges[key]->destNode->pushMessage(messageToSend);
+    this->numberOfMessages++;
+    if(logEnables==2)
+      createLogMessage("Connect Message Sent From ",this->nodeId,this->adjacentEdges[key]->destNode->nodeId);
   }
 
   void processConnectRequest(int levelOfNode,int key)
@@ -153,6 +164,9 @@ public:
       messageToSend.name=this->name;
       messageToSend.state=this->state;
       this->adjacentEdges[key]->destNode->pushMessage(messageToSend);
+      this->numberOfMessages++;
+      if(logEnables==2)
+        createLogMessage("Initiate Message Sent From ",this->nodeId,this->adjacentEdges[key]->destNode->nodeId);
     }
     else if(this->adjacentEdges[key]->state==BASIC)
     {
@@ -176,6 +190,9 @@ public:
       messageToSend.name=temp1;
       messageToSend.state=FIND;
       this->adjacentEdges[key]->destNode->pushMessage(messageToSend);
+      this->numberOfMessages++;
+      if(logEnables==2)
+        createLogMessage("Initiate Message Sent From ",this->nodeId,this->adjacentEdges[key]->destNode->nodeId);
     }
   }
 
@@ -201,6 +218,9 @@ public:
         messageToSend.name=this->name;
         messageToSend.state=this->state;
         this->adjacentEdges[i.first]->destNode->pushMessage(messageToSend);
+        this->numberOfMessages++;
+        if(logEnables==2)
+          createLogMessage("Initiate Message Sent From ",this->nodeId,this->adjacentEdges[i.first]->destNode->nodeId);
       }
     }
 
@@ -231,6 +251,9 @@ public:
       messageToSend.arguments[1]=this->adjacentEdges[key]->weight;
       messageToSend.name=this->name;
       this->adjacentEdges[this->testNode]->destNode->pushMessage(messageToSend);
+      this->numberOfMessages++;
+      if(logEnables==2)
+        createLogMessage("Test Message Sent From ",this->nodeId,this->adjacentEdges[this->testNode]->destNode->nodeId);
     }
     else
     {
@@ -262,6 +285,10 @@ public:
         messageToSend.arguments[0] = -1;
         messageToSend.arguments[1] = this->adjacentEdges[key]->weight;
         this->adjacentEdges[key]->destNode->pushMessage(messageToSend);
+        this->numberOfMessages++;
+        if(logEnables==2)
+          createLogMessage("Reject Message Sent From ",this->nodeId,this->adjacentEdges[key]->destNode->nodeId);
+
       }
       else
         testPhase();
@@ -273,6 +300,9 @@ public:
       messageToSend.arguments[0] = -1;
       messageToSend.arguments[1] = this->adjacentEdges[key]->weight;
       this->adjacentEdges[key]->destNode->pushMessage(messageToSend);
+      this->numberOfMessages++;
+      if(logEnables==2)
+        createLogMessage("Accept Message Sent From ",this->nodeId,this->adjacentEdges[key]->destNode->nodeId);
     }
   }
 
@@ -309,6 +339,9 @@ public:
       messageToSend.arguments[0]=this->bestWeight;
       messageToSend.arguments[1]=this->adjacentEdges[this->parent->nodeId]->weight;//Can cause segmentation
       this->parent->pushMessage(messageToSend);
+      this->numberOfMessages++;
+      if(logEnables==2)
+        createLogMessage("Report Message Sent From ",this->nodeId,this->parent->nodeId);
     }
   }
 
@@ -362,6 +395,9 @@ public:
       messageToSend.arguments[0]=-1;
       messageToSend.arguments[1]=this->adjacentEdges[this->bestNode->nodeId]->weight;
       this->bestNode->pushMessage(messageToSend);
+      this->numberOfMessages++;
+      if(logEnables==2)
+        createLogMessage("Changeroot Message Sent From ",this->nodeId,this->bestNode->nodeId);
     }
     else
     {
@@ -371,6 +407,7 @@ public:
       messageToSend.arguments[0]=this->level;
       messageToSend.arguments[1]=this->adjacentEdges[this->bestNode->nodeId]->weight;
       this->bestNode->pushMessage(messageToSend);
+      this->numberOfMessages++;
       addEdgeToMSTLock.lock();
       int ind = this->bestNode->nodeId;
       int index=ind;
@@ -379,6 +416,8 @@ public:
       outputString+="("+to_string(this->nodeId)+", "+to_string(this->adjacentEdges[index]->destNode->nodeId)+", "+to_string(this->adjacentEdges[index]->weight)+")";
       mstEdges.push_back(outputString);
       addEdgeToMSTLock.unlock();
+      if(logEnables==2)
+        createLogMessage("Connect Message Sent From ",this->nodeId,this->bestNode->nodeId);
     }
   }
 
