@@ -1,10 +1,10 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-pair<int,int> pairOfNodeWeight;
+typedef pair<int,int> pairOfNodeWeight;
 map<int,vector<pair<int,int>>> adjacencyList;
 map<int,pair<int,int>> mst;
-
+map<int,pair<int,int>> allEdges;
 vector<int> processLine(string s)
 {
   vector<int> out;
@@ -25,7 +25,7 @@ vector<int> processLine(string s)
 
 void findMST(int src,int numNodes)
 {
-  priority_queue<int, vector<int>, greater<int>> minHeap;
+  priority_queue<pairOfNodeWeight, vector<pairOfNodeWeight>, greater<pairOfNodeWeight>> minHeap;
   int weightAtEachNode[numNodes];
   int parent[numNodes];
   bool flag[numNodes];
@@ -36,12 +36,12 @@ void findMST(int src,int numNodes)
     flag[i]=false;
   }
 
-  minHeap.push(src);
+  minHeap.push(make_pair(0,src));
   weightAtEachNode[src]=0;
 
   while(!minHeap.empty())
   {
-    int temp = minHeap.top();
+    int temp = minHeap.top().second;
     minHeap.pop();
     flag[temp] = true;
     for(int i=0;i<adjacencyList[temp].size();i++)
@@ -52,14 +52,29 @@ void findMST(int src,int numNodes)
       if(flag[destNode]==false && weightAtEachNode[destNode]>weight)
       {
         weightAtEachNode[destNode]=weight;
-        minHeap.push(destNode);
+        minHeap.push(make_pair(weightAtEachNode[destNode],destNode));
         parent[destNode]=temp;
-        mst[weight]=make_pair(parent[destNode],destNode);
+        // mst[weight]=make_pair(parent[destNode],destNode);
       }
     }
   }
+  // for (int i = 1; i < numNodes; ++i)
+  //       printf("%d - %d\n", parent[i], i);
 
-
+  for(int i=1;i<numNodes;++i)
+  {
+    int temp1=parent[i];
+    int temp2=i;
+    for(auto j:allEdges)
+    {
+      if((j.second.first==temp1 && j.second.second==temp2) || (j.second.second==temp1 && j.second.first==temp2))
+      {
+        mst[j.first]=make_pair(j.second.first,j.second.second);
+        break;
+      }
+    }
+  }
+  //
   for(auto i:mst)
     cout<<"("<<i.second.first<<", "<<i.second.second<<", "<<i.first<<")"<<endl;
 }
@@ -90,6 +105,7 @@ int main(int argc,char** argv)
         }
 
         vector<int> edgeDetail=processLine(line);
+        allEdges[edgeDetail[2]]=make_pair(edgeDetail[0],edgeDetail[1]);
         adjacencyList[edgeDetail[0]].push_back(make_pair(edgeDetail[1],edgeDetail[2]));
         adjacencyList[edgeDetail[1]].push_back(make_pair(edgeDetail[0],edgeDetail[2]));
       }
