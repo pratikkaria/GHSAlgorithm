@@ -4,7 +4,14 @@
 #include <unistd.h>
 using namespace std;
 
+//---------------Function for thread to execute---------------
+void entryFunction(Node* node)
+{
+  while(!stopFlag)
+    node->pullMessage();
+// cout<<this_thread::get_id()<<endl;
 
+}
 
 void printAdjacentEdges(ofstream *logFile)
 {
@@ -24,12 +31,7 @@ void printAdjacentEdges(ofstream *logFile)
   }
 }
 
-//---------------Function for thread to execute---------------
-void entryFunction(Node* node)
-{
-  while(!stopFlag)
-    node->pullMessage();
-}
+
 
 //---------------Display the vector----------------
 template<typename T>
@@ -234,7 +236,9 @@ int main(int argc,char** argv)
       for(int i=0;i<numNodes;i++)
         t[i]=thread(entryFunction,allNodes[i]);
 
-      allNodes[0]->initialConnect();
+      for(int i=0;i<numNodes;i++)
+        allNodes[i]->initialConnect();
+      allNodes[numNodes-1]->initialConnect();
       for(int i=0;i<numNodes;i++)
         t[i].join();
       time(&end);
@@ -243,12 +247,7 @@ int main(int argc,char** argv)
 
       postProcessing();
 
-      int totalMessages=0;
-      for(int i=0;i<allNodes.size();i++)
-        totalMessages+=allNodes[i]->numberOfMessages;
-      logFile.open("messageCount.txt");
-      logFile<<"Total:"<<to_string(totalMessages)<<"\n";
-      logFile.close();
+
       double time_taken = double(end - start);
 
       if(logEnables==1 || all==1)

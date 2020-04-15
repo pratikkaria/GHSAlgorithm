@@ -1,0 +1,804 @@
+Adjacent Edges Of:0
+First	Second	Weight	State	
+0	43	115	2
+0	50	103	2
+0	68	48	1
+0	75	20	1
+---------------------
+Adjacent Edges Of:1
+First	Second	Weight	State	
+1	45	112	1
+---------------------
+Adjacent Edges Of:2
+First	Second	Weight	State	
+2	67	6	1
+2	84	29	1
+2	92	86	1
+---------------------
+Adjacent Edges Of:3
+First	Second	Weight	State	
+3	11	35	1
+3	19	43	1
+3	55	109	1
+---------------------
+Adjacent Edges Of:4
+First	Second	Weight	State	
+4	12	10	1
+4	25	70	1
+---------------------
+Adjacent Edges Of:5
+First	Second	Weight	State	
+5	16	100	1
+5	78	121	2
+---------------------
+Adjacent Edges Of:6
+First	Second	Weight	State	
+6	35	116	1
+6	61	22	1
+---------------------
+Adjacent Edges Of:7
+First	Second	Weight	State	
+7	38	93	1
+7	71	108	2
+---------------------
+Adjacent Edges Of:8
+First	Second	Weight	State	
+8	9	114	1
+8	44	150	2
+8	88	129	2
+---------------------
+Adjacent Edges Of:9
+First	Second	Weight	State	
+9	8	114	1
+9	14	45	1
+9	40	50	1
+9	60	142	2
+9	89	40	1
+---------------------
+Adjacent Edges Of:10
+First	Second	Weight	State	
+10	51	82	2
+10	82	31	1
+---------------------
+Adjacent Edges Of:11
+First	Second	Weight	State	
+11	3	35	1
+11	26	12	1
+11	34	71	1
+11	41	16	1
+11	42	135	2
+11	56	145	2
+11	66	74	1
+11	72	8	1
+11	82	88	2
+11	99	36	1
+---------------------
+Adjacent Edges Of:12
+First	Second	Weight	State	
+12	4	10	1
+12	63	136	2
+12	68	104	2
+12	78	102	1
+---------------------
+Adjacent Edges Of:13
+First	Second	Weight	State	
+13	21	49	1
+---------------------
+Adjacent Edges Of:14
+First	Second	Weight	State	
+14	9	45	1
+---------------------
+Adjacent Edges Of:15
+First	Second	Weight	State	
+15	18	17	1
+15	24	62	1
+15	70	95	2
+---------------------
+Adjacent Edges Of:16
+First	Second	Weight	State	
+16	5	100	1
+16	24	42	1
+16	31	3	1
+16	34	120	2
+---------------------
+Adjacent Edges Of:17
+First	Second	Weight	State	
+17	18	38	1
+17	27	81	1
+17	31	67	2
+17	75	110	2
+---------------------
+Adjacent Edges Of:18
+First	Second	Weight	State	
+18	15	17	1
+18	17	38	1
+18	34	15	1
+18	47	137	2
+---------------------
+Adjacent Edges Of:19
+First	Second	Weight	State	
+19	3	43	1
+19	28	13	1
+19	54	26	1
+19	80	72	1
+---------------------
+Adjacent Edges Of:20
+First	Second	Weight	State	
+20	69	87	1
+20	79	133	2
+---------------------
+Adjacent Edges Of:21
+First	Second	Weight	State	
+21	13	49	1
+21	29	60	1
+---------------------
+Adjacent Edges Of:22
+First	Second	Weight	State	
+22	52	97	1
+22	78	148	2
+22	82	125	2
+---------------------
+Adjacent Edges Of:23
+First	Second	Weight	State	
+23	34	7	1
+23	51	73	1
+23	83	59	1
+---------------------
+Adjacent Edges Of:24
+First	Second	Weight	State	
+24	15	62	1
+24	16	42	1
+24	56	91	1
+24	82	94	2
+24	91	138	2
+---------------------
+Adjacent Edges Of:25
+First	Second	Weight	State	
+25	4	70	1
+25	39	124	2
+25	49	24	1
+25	50	61	1
+25	79	34	1
+---------------------
+Adjacent Edges Of:26
+First	Second	Weight	State	
+26	11	12	1
+26	70	46	1
+26	77	47	1
+---------------------
+Adjacent Edges Of:27
+First	Second	Weight	State	
+27	17	81	1
+27	91	140	2
+---------------------
+Adjacent Edges Of:28
+First	Second	Weight	State	
+28	19	13	1
+28	44	19	1
+28	60	146	2
+---------------------
+Adjacent Edges Of:29
+First	Second	Weight	State	
+29	21	60	1
+29	60	106	1
+29	69	130	2
+---------------------
+Adjacent Edges Of:30
+First	Second	Weight	State	
+30	76	14	1
+30	83	32	1
+---------------------
+Adjacent Edges Of:31
+First	Second	Weight	State	
+31	16	3	1
+31	17	67	2
+31	71	101	1
+---------------------
+Adjacent Edges Of:32
+First	Second	Weight	State	
+32	78	123	1
+32	90	55	1
+---------------------
+Adjacent Edges Of:33
+First	Second	Weight	State	
+33	46	39	1
+33	58	141	2
+33	88	56	1
+33	92	118	2
+---------------------
+Adjacent Edges Of:34
+First	Second	Weight	State	
+34	11	71	1
+34	16	120	2
+34	18	15	1
+34	23	7	1
+34	86	9	1
+---------------------
+Adjacent Edges Of:35
+First	Second	Weight	State	
+35	6	116	1
+35	40	128	2
+35	77	131	2
+---------------------
+Adjacent Edges Of:36
+First	Second	Weight	State	
+36	88	44	1
+36	98	117	2
+---------------------
+Adjacent Edges Of:37
+First	Second	Weight	State	
+37	50	37	1
+37	61	23	1
+37	82	65	2
+---------------------
+Adjacent Edges Of:38
+First	Second	Weight	State	
+38	7	93	1
+38	82	85	1
+38	92	90	2
+---------------------
+Adjacent Edges Of:39
+First	Second	Weight	State	
+39	25	124	2
+39	91	122	1
+---------------------
+Adjacent Edges Of:40
+First	Second	Weight	State	
+40	9	50	1
+40	35	128	2
+40	49	127	2
+40	65	41	1
+---------------------
+Adjacent Edges Of:41
+First	Second	Weight	State	
+41	11	16	1
+41	56	132	2
+41	63	79	1
+41	68	58	1
+41	98	54	1
+---------------------
+Adjacent Edges Of:42
+First	Second	Weight	State	
+42	11	135	2
+42	53	107	2
+42	74	51	1
+---------------------
+Adjacent Edges Of:43
+First	Second	Weight	State	
+43	0	115	2
+43	45	63	1
+43	81	64	1
+---------------------
+Adjacent Edges Of:44
+First	Second	Weight	State	
+44	8	150	2
+44	28	19	1
+---------------------
+Adjacent Edges Of:45
+First	Second	Weight	State	
+45	1	112	1
+45	43	63	1
+45	51	21	1
+45	86	147	2
+---------------------
+Adjacent Edges Of:46
+First	Second	Weight	State	
+46	33	39	1
+46	53	33	1
+---------------------
+Adjacent Edges Of:47
+First	Second	Weight	State	
+47	18	137	2
+47	78	1	1
+---------------------
+Adjacent Edges Of:48
+First	Second	Weight	State	
+48	78	89	1
+---------------------
+Adjacent Edges Of:49
+First	Second	Weight	State	
+49	25	24	1
+49	40	127	2
+49	95	105	1
+---------------------
+Adjacent Edges Of:50
+First	Second	Weight	State	
+50	0	103	2
+50	25	61	1
+50	37	37	1
+50	77	5	1
+---------------------
+Adjacent Edges Of:51
+First	Second	Weight	State	
+51	10	82	2
+51	23	73	1
+51	45	21	1
+51	97	98	2
+---------------------
+Adjacent Edges Of:52
+First	Second	Weight	State	
+52	22	97	1
+52	62	111	2
+52	81	4	1
+52	96	139	2
+---------------------
+Adjacent Edges Of:53
+First	Second	Weight	State	
+53	42	107	2
+53	46	33	1
+---------------------
+Adjacent Edges Of:54
+First	Second	Weight	State	
+54	19	26	1
+---------------------
+Adjacent Edges Of:55
+First	Second	Weight	State	
+55	3	109	1
+---------------------
+Adjacent Edges Of:56
+First	Second	Weight	State	
+56	11	145	2
+56	24	91	1
+56	41	132	2
+---------------------
+Adjacent Edges Of:57
+First	Second	Weight	State	
+57	63	144	2
+57	66	78	2
+57	74	52	1
+57	97	18	1
+---------------------
+Adjacent Edges Of:58
+First	Second	Weight	State	
+58	33	141	2
+58	59	68	1
+58	91	53	1
+---------------------
+Adjacent Edges Of:59
+First	Second	Weight	State	
+59	58	68	1
+59	96	92	2
+---------------------
+Adjacent Edges Of:60
+First	Second	Weight	State	
+60	9	142	2
+60	28	146	2
+60	29	106	1
+60	62	80	1
+60	64	11	1
+60	69	28	1
+---------------------
+Adjacent Edges Of:61
+First	Second	Weight	State	
+61	6	22	1
+61	37	23	1
+61	62	77	1
+---------------------
+Adjacent Edges Of:62
+First	Second	Weight	State	
+62	52	111	2
+62	60	80	1
+62	61	77	1
+---------------------
+Adjacent Edges Of:63
+First	Second	Weight	State	
+63	12	136	2
+63	41	79	1
+63	57	144	2
+---------------------
+Adjacent Edges Of:64
+First	Second	Weight	State	
+64	60	11	1
+64	82	126	2
+64	87	96	1
+---------------------
+Adjacent Edges Of:65
+First	Second	Weight	State	
+65	40	41	1
+65	93	27	1
+---------------------
+Adjacent Edges Of:66
+First	Second	Weight	State	
+66	11	74	1
+66	57	78	2
+66	92	25	1
+---------------------
+Adjacent Edges Of:67
+First	Second	Weight	State	
+67	2	6	1
+67	85	119	2
+---------------------
+Adjacent Edges Of:68
+First	Second	Weight	State	
+68	0	48	1
+68	12	104	2
+68	41	58	1
+---------------------
+Adjacent Edges Of:69
+First	Second	Weight	State	
+69	20	87	1
+69	29	130	2
+69	60	28	1
+69	96	76	1
+---------------------
+Adjacent Edges Of:70
+First	Second	Weight	State	
+70	15	95	2
+70	26	46	1
+70	82	30	1
+70	86	99	2
+---------------------
+Adjacent Edges Of:71
+First	Second	Weight	State	
+71	7	108	2
+71	31	101	1
+---------------------
+Adjacent Edges Of:72
+First	Second	Weight	State	
+72	11	8	1
+72	97	75	1
+---------------------
+Adjacent Edges Of:73
+First	Second	Weight	State	
+73	77	66	1
+---------------------
+Adjacent Edges Of:74
+First	Second	Weight	State	
+74	42	51	1
+74	57	52	1
+74	93	143	2
+---------------------
+Adjacent Edges Of:75
+First	Second	Weight	State	
+75	0	20	1
+75	17	110	2
+---------------------
+Adjacent Edges Of:76
+First	Second	Weight	State	
+76	30	14	1
+76	98	83	2
+---------------------
+Adjacent Edges Of:77
+First	Second	Weight	State	
+77	26	47	1
+77	35	131	2
+77	50	5	1
+77	73	66	1
+---------------------
+Adjacent Edges Of:78
+First	Second	Weight	State	
+78	5	121	2
+78	12	102	1
+78	22	148	2
+78	32	123	1
+78	47	1	1
+78	48	89	1
+---------------------
+Adjacent Edges Of:79
+First	Second	Weight	State	
+79	20	133	2
+79	25	34	1
+79	91	57	1
+---------------------
+Adjacent Edges Of:80
+First	Second	Weight	State	
+80	19	72	1
+80	92	134	2
+---------------------
+Adjacent Edges Of:81
+First	Second	Weight	State	
+81	43	64	1
+81	52	4	1
+---------------------
+Adjacent Edges Of:82
+First	Second	Weight	State	
+82	10	31	1
+82	11	88	2
+82	22	125	2
+82	24	94	2
+82	37	65	2
+82	38	85	1
+82	64	126	2
+82	70	30	1
+82	88	2	1
+---------------------
+Adjacent Edges Of:83
+First	Second	Weight	State	
+83	23	59	1
+83	30	32	1
+83	89	69	1
+---------------------
+Adjacent Edges Of:84
+First	Second	Weight	State	
+84	2	29	1
+---------------------
+Adjacent Edges Of:85
+First	Second	Weight	State	
+85	67	119	2
+85	86	113	1
+---------------------
+Adjacent Edges Of:86
+First	Second	Weight	State	
+86	34	9	1
+86	45	147	2
+86	70	99	2
+86	85	113	1
+86	95	149	2
+---------------------
+Adjacent Edges Of:87
+First	Second	Weight	State	
+87	64	96	1
+87	94	84	1
+---------------------
+Adjacent Edges Of:88
+First	Second	Weight	State	
+88	8	129	2
+88	33	56	1
+88	36	44	1
+88	82	2	1
+---------------------
+Adjacent Edges Of:89
+First	Second	Weight	State	
+89	9	40	1
+89	83	69	1
+---------------------
+Adjacent Edges Of:90
+First	Second	Weight	State	
+90	32	55	1
+---------------------
+Adjacent Edges Of:91
+First	Second	Weight	State	
+91	24	138	2
+91	27	140	2
+91	39	122	1
+91	58	53	1
+91	79	57	1
+---------------------
+Adjacent Edges Of:92
+First	Second	Weight	State	
+92	2	86	1
+92	33	118	2
+92	38	90	2
+92	66	25	1
+92	80	134	2
+---------------------
+Adjacent Edges Of:93
+First	Second	Weight	State	
+93	65	27	1
+93	74	143	2
+---------------------
+Adjacent Edges Of:94
+First	Second	Weight	State	
+94	87	84	1
+---------------------
+Adjacent Edges Of:95
+First	Second	Weight	State	
+95	49	105	1
+95	86	149	2
+---------------------
+Adjacent Edges Of:96
+First	Second	Weight	State	
+96	52	139	2
+96	59	92	2
+96	69	76	1
+---------------------
+Adjacent Edges Of:97
+First	Second	Weight	State	
+97	51	98	2
+97	57	18	1
+97	72	75	1
+---------------------
+Adjacent Edges Of:98
+First	Second	Weight	State	
+98	36	117	2
+98	41	54	1
+98	76	83	2
+---------------------
+Adjacent Edges Of:99
+First	Second	Weight	State	
+99	11	36	1
+---------------------
+Execution Time of the program: 24.3363 seconds
+Total Messages : 1501
+Number of Messages Sent by Node:0 is 19
+Number of Messages Sent by Node:1 is 6
+Number of Messages Sent by Node:2 is 18
+Number of Messages Sent by Node:3 is 18
+Number of Messages Sent by Node:4 is 11
+Number of Messages Sent by Node:5 is 12
+Number of Messages Sent by Node:6 is 11
+Number of Messages Sent by Node:7 is 9
+Number of Messages Sent by Node:8 is 14
+Number of Messages Sent by Node:9 is 28
+Number of Messages Sent by Node:10 is 11
+Number of Messages Sent by Node:11 is 43
+Number of Messages Sent by Node:12 is 17
+Number of Messages Sent by Node:13 is 6
+Number of Messages Sent by Node:14 is 6
+Number of Messages Sent by Node:15 is 17
+Number of Messages Sent by Node:16 is 19
+Number of Messages Sent by Node:17 is 18
+Number of Messages Sent by Node:18 is 21
+Number of Messages Sent by Node:19 is 22
+Number of Messages Sent by Node:20 is 10
+Number of Messages Sent by Node:21 is 12
+Number of Messages Sent by Node:22 is 11
+Number of Messages Sent by Node:23 is 20
+Number of Messages Sent by Node:24 is 24
+Number of Messages Sent by Node:25 is 24
+Number of Messages Sent by Node:26 is 20
+Number of Messages Sent by Node:27 is 8
+Number of Messages Sent by Node:28 is 14
+Number of Messages Sent by Node:29 is 14
+Number of Messages Sent by Node:30 is 12
+Number of Messages Sent by Node:31 is 13
+Number of Messages Sent by Node:32 is 8
+Number of Messages Sent by Node:33 is 18
+Number of Messages Sent by Node:34 is 26
+Number of Messages Sent by Node:35 is 11
+Number of Messages Sent by Node:36 is 8
+Number of Messages Sent by Node:37 is 17
+Number of Messages Sent by Node:38 is 8
+Number of Messages Sent by Node:39 is 6
+Number of Messages Sent by Node:40 is 23
+Number of Messages Sent by Node:41 is 25
+Number of Messages Sent by Node:42 is 12
+Number of Messages Sent by Node:43 is 18
+Number of Messages Sent by Node:44 is 10
+Number of Messages Sent by Node:45 is 21
+Number of Messages Sent by Node:46 is 12
+Number of Messages Sent by Node:47 is 13
+Number of Messages Sent by Node:48 is 6
+Number of Messages Sent by Node:49 is 17
+Number of Messages Sent by Node:50 is 23
+Number of Messages Sent by Node:51 is 20
+Number of Messages Sent by Node:52 is 19
+Number of Messages Sent by Node:53 is 11
+Number of Messages Sent by Node:54 is 6
+Number of Messages Sent by Node:55 is 5
+Number of Messages Sent by Node:56 is 11
+Number of Messages Sent by Node:57 is 18
+Number of Messages Sent by Node:58 is 15
+Number of Messages Sent by Node:59 is 11
+Number of Messages Sent by Node:60 is 31
+Number of Messages Sent by Node:61 is 17
+Number of Messages Sent by Node:62 is 18
+Number of Messages Sent by Node:63 is 8
+Number of Messages Sent by Node:64 is 14
+Number of Messages Sent by Node:65 is 12
+Number of Messages Sent by Node:66 is 14
+Number of Messages Sent by Node:67 is 12
+Number of Messages Sent by Node:68 is 16
+Number of Messages Sent by Node:69 is 18
+Number of Messages Sent by Node:70 is 22
+Number of Messages Sent by Node:71 is 10
+Number of Messages Sent by Node:72 is 13
+Number of Messages Sent by Node:73 is 4
+Number of Messages Sent by Node:74 is 19
+Number of Messages Sent by Node:75 is 12
+Number of Messages Sent by Node:76 is 13
+Number of Messages Sent by Node:77 is 17
+Number of Messages Sent by Node:78 is 28
+Number of Messages Sent by Node:79 is 18
+Number of Messages Sent by Node:80 is 6
+Number of Messages Sent by Node:81 is 13
+Number of Messages Sent by Node:82 is 35
+Number of Messages Sent by Node:83 is 21
+Number of Messages Sent by Node:84 is 6
+Number of Messages Sent by Node:85 is 10
+Number of Messages Sent by Node:86 is 20
+Number of Messages Sent by Node:87 is 13
+Number of Messages Sent by Node:88 is 22
+Number of Messages Sent by Node:89 is 13
+Number of Messages Sent by Node:90 is 4
+Number of Messages Sent by Node:91 is 23
+Number of Messages Sent by Node:92 is 15
+Number of Messages Sent by Node:93 is 12
+Number of Messages Sent by Node:94 is 6
+Number of Messages Sent by Node:95 is 10
+Number of Messages Sent by Node:96 is 13
+Number of Messages Sent by Node:97 is 16
+Number of Messages Sent by Node:98 is 15
+Number of Messages Sent by Node:99 is 6
+-----------------------
+Final MST: 
+-----------------------
+(47, 78, 1)
+(82, 88, 2)
+(16, 31, 3)
+(52, 81, 4)
+(50, 77, 5)
+(2, 67, 6)
+(23, 34, 7)
+(11, 72, 8)
+(34, 86, 9)
+(4, 12, 10)
+(60, 64, 11)
+(11, 26, 12)
+(19, 28, 13)
+(30, 76, 14)
+(18, 34, 15)
+(11, 41, 16)
+(15, 18, 17)
+(57, 97, 18)
+(28, 44, 19)
+(0, 75, 20)
+(45, 51, 21)
+(6, 61, 22)
+(37, 61, 23)
+(25, 49, 24)
+(66, 92, 25)
+(19, 54, 26)
+(65, 93, 27)
+(60, 69, 28)
+(2, 84, 29)
+(70, 82, 30)
+(10, 82, 31)
+(30, 83, 32)
+(46, 53, 33)
+(25, 79, 34)
+(3, 11, 35)
+(11, 99, 36)
+(37, 50, 37)
+(17, 18, 38)
+(33, 46, 39)
+(9, 89, 40)
+(40, 65, 41)
+(16, 24, 42)
+(3, 19, 43)
+(36, 88, 44)
+(9, 14, 45)
+(26, 70, 46)
+(26, 77, 47)
+(0, 68, 48)
+(13, 21, 49)
+(9, 40, 50)
+(42, 74, 51)
+(57, 74, 52)
+(58, 91, 53)
+(41, 98, 54)
+(32, 90, 55)
+(33, 88, 56)
+(79, 91, 57)
+(41, 68, 58)
+(23, 83, 59)
+(21, 29, 60)
+(25, 50, 61)
+(15, 24, 62)
+(43, 45, 63)
+(43, 81, 64)
+(73, 77, 66)
+(58, 59, 68)
+(83, 89, 69)
+(4, 25, 70)
+(11, 34, 71)
+(19, 80, 72)
+(23, 51, 73)
+(11, 66, 74)
+(72, 97, 75)
+(69, 96, 76)
+(61, 62, 77)
+(41, 63, 79)
+(60, 62, 80)
+(17, 27, 81)
+(87, 94, 84)
+(38, 82, 85)
+(2, 92, 86)
+(20, 69, 87)
+(48, 78, 89)
+(24, 56, 91)
+(7, 38, 93)
+(64, 87, 96)
+(22, 52, 97)
+(5, 16, 100)
+(31, 71, 101)
+(12, 78, 102)
+(49, 95, 105)
+(29, 60, 106)
+(3, 55, 109)
+(1, 45, 112)
+(85, 86, 113)
+(8, 9, 114)
+(6, 35, 116)
+(39, 91, 122)
+(32, 78, 123)
