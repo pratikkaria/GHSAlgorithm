@@ -476,16 +476,17 @@ Note: C++ 11 is required for the code to run.
 Suppose code is in the folder 2019MCS2568.
 
 ```
-$ cd 2019MCS
+$ git clone https://github.com/pratikkaria/GHSAlgorithm.git
+$ cd GHSAlgorithm
 $ make
-$. / findMST<i n p u t f i l e name>
+$ ./findMST <input file>
 ```
 Note: Output will be displayed in the desired format in the terminal.
 There are multiple logging and summary options also provided in the code. To know more about it execute the
 following command:
 
 ```
-$. / findMST−−help
+$ ./findMST−−help
 ```
 ### 4.2 Machine Configuration of Code Development
 
