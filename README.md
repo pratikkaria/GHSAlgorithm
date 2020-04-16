@@ -403,46 +403,7 @@ Note : N = Number of Nodes, E = Number of Edges
 - Number of messages exchanged by the nodes -1505 (Varies every time program is executed)
 
 
-### 3.3 Average Number of messages exchanged
-
-#### 1000
-
-#### 1500
-
-#### 2000
-
-#### 2500
-
-#### 3000
-
-#### 3500
-
-#### 4000
-
-#### 4500
-
-#### 5000
-
-#### 5500
-
-#### 6000
-
-#### 50 60 70 80 90 100
-
-```
-Average Number of Messages
-```
-```
-Number of Nodes
-```
-```
-Average Number of Messages vs Node Count
-```
-```
-’avgMessageCount’
-```
-
-### 3.4 Some Other Test Cases
+### 3.3 Some Other Test Cases
 
 I had executed my program oncomplete graphwith number of vertices ranging from 50 to 100. The unique weights
 were assigned randomly. The execution time and the number of messages exchanged are as follows:
