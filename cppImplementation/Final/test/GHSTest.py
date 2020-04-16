@@ -16,6 +16,7 @@ for i in range(50,101):
     edgeCount.append(int((i*(i-1))/2))
     nodeMessageCount=0
     for j in edgeCount:
+        print(str(i)+" "+str(j))
         numberOfNodes = i
         numberOfEdges = j
         commandToRun = "sh testYourImplementation.sh "+ghsExecutable+" primsMST "+str(i)+" "+str(j)+" > result.txt"
@@ -35,7 +36,7 @@ for i in range(50,101):
             outputLogFile.write("Number of Nodes:"+str(i)+" Number of Edges: "+str(j)+" Failed\n")
         os.system("rm result.txt")
         outputLogFile.close();
-    averageCount=nodeMessageCount/12;
+        averageCount=nodeMessageCount/12;
     fp = open("average.txt","a")
     fp.write(str(i)+":"+str(averageCount)+"\n")
     fp.close()
