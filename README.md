@@ -473,7 +473,6 @@ Nodes Edges Time Messages
 ### 4.1 Run Code
 
 Note: C++ 11 is required for the code to run.
-Suppose code is in the folder 2019MCS2568.
 
 ```
 $ git clone https://github.com/pratikkaria/GHSAlgorithm.git
